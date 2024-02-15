@@ -10,7 +10,7 @@
     "seed": "tsc --project seed/tsconfig.json && node --env-file .env seed/dist/index.js",
     "prisma:migrate": "prisma migrate"
   },
-  "keywords": [],
+  "keywords": ["nodejs", "express", "prisma", "sequelize"],
   "author": "JPF3N998",
   "license": "ISC",
   "devDependencies": {
