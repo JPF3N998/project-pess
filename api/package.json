@@ -6,13 +6,17 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node dist/index.js"
+    "start": "tsc && node --env-file .env dist/index.js"
   },
   "keywords": [],
   "author": "JPF3N998",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.11.19",
+    "prisma": "^5.9.1",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@prisma/client": "5.9.1"
   }
 }

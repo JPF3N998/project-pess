@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  shoppingCart ShoppingCart?
+}
+
+model Product {
+  id            Int                      @id @default(autoincrement())
+  name          String                   @unique
+  price         Float                    @default(0)
+  shoppingCarts ProductsOnShoppingCart[]
+}
+
+model ShoppingCart {
+  id       Int                      @id @default(autoincrement())
+  owner    User                     @relation(fields: [ownerId], references: [id])
+  ownerId  Int                      @unique
+  products ProductsOnShoppingCart[]
+}
+
+model ProductsOnShoppingCart {
+  shoppingCartId Int
+  productId      Int
+  shoppingCart   ShoppingCart @relation(fields: [shoppingCartId], references: [id])
+  product        Product      @relation(fields: [productId], references: [id])
+
+  @@id([shoppingCartId, productId])
+}
+
+// Ref: https://supabase.com/partners/integrations/prisma
