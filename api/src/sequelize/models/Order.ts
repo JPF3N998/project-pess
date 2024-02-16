@@ -6,7 +6,7 @@ if (!process.env.DATABASE_URL) {
 
 const sequelize = new Sequelize(process.env.DATABASE_URL)
 
-const Order = sequelize.define('Order', {
+export const Order = sequelize.define('Order', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -30,7 +30,7 @@ const Order = sequelize.define('Order', {
 
 // Could use Cart.hasMany(Product) but product is done by Prisma
 // Opting for manual binding
-const ProductsInOrder = sequelize.define('ProductsInOrder', {
+export const ProductsInOrder = sequelize.define('ProductsInOrder', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -61,12 +61,9 @@ const ProductsInOrder = sequelize.define('ProductsInOrder', {
 // due to blocker described at the end of this file
 // Recommendation: https://sequelize.org/docs/v6/core-concepts/model-basics/#synchronization-in-production
 
-sequelize
-  .sync()
-  .then(() => {
-    console.log('Models synced successfully.')
-  })
-  .catch(err => console.error(err))
+export async function sync() {
+  await sequelize.sync()
+}
 
 /**
  * Migrations via CLI References
