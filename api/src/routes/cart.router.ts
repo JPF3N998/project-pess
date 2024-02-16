@@ -7,6 +7,8 @@ const router = Router()
 
 router.get('/', ShoppingCart.getShoppingCartProducts)
 
-router.post('/add-product', ShoppingCart.addProductToCart)
+router.post('/', ShoppingCart.addProductToCart)
+
+router.delete('/:productId', ShoppingCart.removeProduct)
 
 export default router
