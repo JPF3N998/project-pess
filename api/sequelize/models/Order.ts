@@ -21,6 +21,10 @@ const Order = sequelize.define('Order', {
       key: 'ownerId'
     },
     comment: 'Shopping cart ID associated to this order'
+  },
+  total: {
+    type: DataTypes.DECIMAL,
+    comment: 'Order total'
   }
 })
 
