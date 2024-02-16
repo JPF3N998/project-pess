@@ -32,6 +32,7 @@ model ShoppingCart {
 }
 
 model ProductsOnShoppingCart {
+  quantity       Int          @default(1)
   shoppingCartId Int
   productId      Int
   shoppingCart   ShoppingCart @relation(fields: [shoppingCartId], references: [id])
