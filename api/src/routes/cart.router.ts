@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router } from 'express'
 import { Handlers } from '../handlers/index.js'
 
 const { ShoppingCart } = Handlers

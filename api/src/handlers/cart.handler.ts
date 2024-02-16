@@ -4,14 +4,14 @@ import { usePrisma } from '../prisma/useClient.js'
 import { HTTP_STATUS_CODES } from '../constants/HttpCodes.js'
 import { RequestWithUserShoppingCart } from '../middleware/useShoppingCart.js'
 
-async function getShoppingCartProducts(req: Request, res: Response) {  
+async function getShoppingCartProducts (req: Request, res: Response) {
   const { shoppingCart } = (req as RequestWithUserShoppingCart)
 
   const client = usePrisma()
-  
+
   const products = await client.productsOnShoppingCart.findMany({
     select: {
-      product: {select: { name: true }},
+      product: { select: { name: true } },
       quantity: true
     },
     where: {
@@ -26,7 +26,7 @@ type PostAddProductBody = Pick<Product, 'id'> & {
   quantity: number
 }
 
-async function addProductToCart(req: Request<{}, {}, PostAddProductBody>, res: Response) {
+async function addProductToCart (req: Request<{}, {}, PostAddProductBody>, res: Response) {
   const { shoppingCart } = (req as RequestWithUserShoppingCart)
   const { id, quantity = 1 } = req.body
   const client = usePrisma()
@@ -51,11 +51,10 @@ async function addProductToCart(req: Request<{}, {}, PostAddProductBody>, res: R
   })
 
   res.status(200).json({ product: upsertedProduct })
-  return
 }
 
-async function removeProduct(req: Request, res: Response) {
-  
+async function removeProduct (req: Request, res: Response) {
+
 }
 
 export default {
