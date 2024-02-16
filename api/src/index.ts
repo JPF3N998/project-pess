@@ -8,7 +8,9 @@ import { useShoppingCart } from './middleware/useShoppingCart.js'
 
 const app = express()
 
-app.use(morgan('tiny'))
+const loggingMode = process.env.NODE_ENV === 'production' ? 'tiny' : 'dev'
+
+app.use(morgan(loggingMode))
 app.use(helmet())
 app.use(express.json())
 
