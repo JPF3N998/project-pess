@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes } from 'sequelize'
+import { Sequelize, DataTypes, ModelDefined, Optional } from 'sequelize'
 
 if (!process.env.DATABASE_URL) {
   throw Error('No connection string to database')
@@ -6,7 +6,15 @@ if (!process.env.DATABASE_URL) {
 
 const sequelize = new Sequelize(process.env.DATABASE_URL)
 
-export const Order = sequelize.define('Order', {
+interface OrderAttributes {
+  id: number
+  cartId: number
+  total: number
+}
+
+type OrderCreationAttributes = Optional<OrderAttributes, 'id'>
+
+export const Order: ModelDefined<OrderAttributes, OrderCreationAttributes> = sequelize.define('Order', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -28,9 +36,20 @@ export const Order = sequelize.define('Order', {
   }
 })
 
+interface ProductsInOrderAttributes {
+  id: number
+  orderId: number
+  productName: string
+  quantity: number
+  price: number
+}
+
+type ProductsInOrderCreationAttributes = Optional<ProductsInOrderAttributes, 'id'>
+
+
 // Could use Cart.hasMany(Product) but product is done by Prisma
 // Opting for manual binding
-export const ProductsInOrder = sequelize.define('ProductsInOrder', {
+export const ProductsInOrder: ModelDefined<ProductsInOrderAttributes, ProductsInOrderCreationAttributes> = sequelize.define('ProductsInOrder', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -47,7 +66,7 @@ export const ProductsInOrder = sequelize.define('ProductsInOrder', {
   // Expand product here. If actual product row is removed, there are no side-effects
   // to an already-generated order
   productName: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
   },
   quantity: {
     type: DataTypes.INTEGER,
