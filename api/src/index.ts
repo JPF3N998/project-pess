@@ -16,6 +16,7 @@ app.use(express.json())
 
 app.use('/:email/cart', useUserId, useShoppingCart, Routers.ShoppingCart)
 
+app.use('/:email', useUserId, useShoppingCart, Routers.Orders)
 
 app.get('/ping', (_, res) => {
   res.status(200).send('\'Sup?')
