@@ -20,7 +20,7 @@ export function useSequelize() {
 export async function ping() {
   try {
     await sequelize.authenticate()
-    console.log('Sequelize ready :white_check_mark:')
+    console.log('Sequelize ready ✅')
   } catch (e) {
     throw Error('Ping failed to DB')
   }

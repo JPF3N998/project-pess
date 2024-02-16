@@ -8,8 +8,9 @@
     "build": "tsc",
     "start": "tsc && node --env-file .env dist/index.js",
     "standardize": "ts-standard --fix",
-    "seed": "tsc --project seed/tsconfig.json && node --env-file .env seed/dist/index.js",
-    "prisma:generate": "prisma generate"
+    "seed": "tsc --project seed/tsconfig.json && node --env-file .env seed/dist/index.js && rm -rf ./seed/dist",
+    "prisma:generate": "prisma generate",
+    "sequelize:sync": "tsc --project sequelize/tsconfig.json && node --env-file .env sequelize/dist/index.js && rm -rf ./sequelize/dist"
   },
   "keywords": [
     "nodejs",
