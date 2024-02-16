@@ -53,6 +53,31 @@ async function addProductToCart (req: Request<{}, {}, PostAddProductBody>, res: 
   res.status(200).json({ product: upsertedProduct })
 }
 
+type UpdateProductQuantityBody = Pick<Product, 'id'> & {
+  quantity: number
+}
+
+async function updateProductQuantity(req: Request<{}, {}, UpdateProductQuantityBody>, res: Response) {
+  const { shoppingCart } = (req as RequestWithUserShoppingCart)
+  const { id, quantity } = req.body
+
+  const client = usePrisma()
+
+  const { quantity: updatedQuantity } = await client.productsOnShoppingCart.update({
+    data: {
+      quantity
+    },
+    where: {
+      shoppingCartId_productId: {
+        productId: id,
+        shoppingCartId: shoppingCart.id
+      }
+    }
+  })
+
+  res.status(200).send(`Updated product quantity to ${updatedQuantity}`)
+}
+
 type DeleteProductRequest = RequestWithUserShoppingCart & {
   params: {
     productId: number
@@ -90,4 +115,5 @@ export default {
   addProductToCart,
   getShoppingCartProducts,
   removeProduct,
+  updateProductQuantity
 }
