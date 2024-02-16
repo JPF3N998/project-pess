@@ -14,7 +14,8 @@ app.use(morgan(loggingMode))
 app.use(helmet())
 app.use(express.json())
 
-app.use('/:email/cart/products', useUserId, useShoppingCart, Routers.ShoppingCart)
+app.use('/:email/cart', useUserId, useShoppingCart, Routers.ShoppingCart)
+
 
 app.get('/ping', (_, res) => {
   res.status(200).send('\'Sup?')

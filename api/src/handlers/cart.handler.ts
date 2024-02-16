@@ -1,23 +1,42 @@
 import { Request, Response } from 'express'
-import { Product } from '@prisma/client'
+import { Product, ShoppingCart } from '@prisma/client'
 import { usePrisma } from '../prisma/useClient.js'
 import { HTTP_STATUS_CODES } from '../constants/HttpCodes.js'
 import { RequestWithUserShoppingCart } from '../middleware/useShoppingCart.js'
+import { useSequelize } from '../sequelize/useClient.js'
+import { Order, ProductsInOrder } from '../sequelize/models/Order.js'
 
-async function getShoppingCartProducts (req: Request, res: Response) {
-  const { shoppingCart } = (req as RequestWithUserShoppingCart)
 
+const cartProducts = async (shoppingCart: ShoppingCart) => {
   const client = usePrisma()
 
   const products = await client.productsOnShoppingCart.findMany({
     select: {
-      product: { select: { id: true, name: true } },
+      product: true,
       quantity: true
     },
     where: {
       shoppingCartId: shoppingCart.id
     }
   })
+
+  return products
+}
+
+const clearCart = async (shoppingCart: ShoppingCart) => {
+  const client = usePrisma()
+
+  await client.productsOnShoppingCart.deleteMany({
+    where: {
+      shoppingCartId: shoppingCart.id
+    }
+  })
+}
+
+async function getShoppingCartProducts (req: Request, res: Response) {
+  const { shoppingCart } = (req as RequestWithUserShoppingCart)
+
+  const products = await cartProducts(shoppingCart)
 
   res.status(HTTP_STATUS_CODES.OK).json({ products })
 }
@@ -110,10 +129,76 @@ async function removeProduct (
   res.sendStatus(200)
 }
 
+// Clear Cart
+async function clearCartProducts(req: Request, res: Response) {
+  const { shoppingCart } = (req as RequestWithUserShoppingCart)
+
+  await clearCart(shoppingCart)
+
+  res.sendStatus(HTTP_STATUS_CODES.OK)
+}
+
+// Checkout
+/**
+ * Generate order and clear cart
+ * @param req 
+ * @param res 
+ */
+async function checkout(
+  req: Request,
+  res: Response
+) {
+  const { shoppingCart } = (req as RequestWithUserShoppingCart)
+  
+  // Gather products
+  const productsOnCart = await cartProducts(shoppingCart)
+
+  const products = productsOnCart.map(({quantity, product}) => ({
+    quantity,
+    productName: product.name,
+    price: product.price
+  }))
+
+  const total = products.reduce((total, {quantity, price}) => {
+    total += quantity * price
+    return total
+  }, 0)
+
+  const client = useSequelize()
+
+  const t = await client.transaction()
+  
+  try {
+    const newOrder = await Order.create({ 
+      cartId: shoppingCart.id,
+      total
+    })
+
+    const productsOnOrder = products.map(
+      ({ productName, quantity, price }) => ({
+        orderId: newOrder.dataValues.id,
+        productName,
+        quantity,
+        price
+      })
+    )
+
+    await ProductsInOrder.bulkCreate(productsOnOrder)
+    
+    await clearCart(shoppingCart)
+
+    res.status(HTTP_STATUS_CODES.CREATED).json({ order: newOrder.dataValues })
+  } catch (error) {
+    console.error(error)
+    await t.rollback()
+  }
+}
 
 export default {
   addProductToCart,
+  checkout,
+  clearCartProducts,
   getShoppingCartProducts,
   removeProduct,
-  updateProductQuantity
+  updateProductQuantity,
 }

@@ -5,16 +5,20 @@ const { ShoppingCart } = Handlers
 
 const router = Router()
 
+// Products
 // C
-router.post('/', ShoppingCart.addProductToCart)
+router.post('/products', ShoppingCart.addProductToCart)
 
 // U
-router.patch('/', ShoppingCart.updateProductQuantity)
+router.patch('/products', ShoppingCart.updateProductQuantity)
 
 // R
-router.get('/', ShoppingCart.getShoppingCartProducts)
+router.get('/products', ShoppingCart.getShoppingCartProducts)
 
 // D
-router.delete('/:productId', ShoppingCart.removeProduct)
+router.delete('/products/:productId', ShoppingCart.removeProduct)
+
+// Orders
+router.post('/checkout', ShoppingCart.checkout)
 
 export default router
