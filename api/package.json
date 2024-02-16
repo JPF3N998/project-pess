@@ -10,7 +10,7 @@
     "standardize": "ts-standard --fix",
     "seed": "tsc --project seed/tsconfig.json && node --env-file .env seed/dist/index.js && rm -rf ./seed/dist",
     "prisma:generate": "prisma generate",
-    "sequelize:sync": "tsc --project sequelize/tsconfig.json && node --env-file .env sequelize/dist/index.js && rm -rf ./sequelize/dist"
+    "sequelize:sync": "tsc --project sequelize/tsconfig.json && node --env-file .env sequelize/dist/sequelize/index.js && rm -rf ./sequelize/dist"
   },
   "keywords": [
     "nodejs",
