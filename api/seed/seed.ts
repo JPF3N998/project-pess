@@ -31,11 +31,17 @@ const productsToInsert = products.map(({ title, price }) => ({ name: title, pric
 export async function seed() {
   const prisma = new PrismaClient()
 
-  const usersCount = await prisma.user.createMany({ data: usersToInsert, skipDuplicates: true })
-  const productsCount = await prisma.product.createMany({ data: productsToInsert, skipDuplicates: true })
+  const usersCreated = await prisma.user.createMany({ data: usersToInsert, skipDuplicates: true })
+  const productsCreated = await prisma.product.createMany({ data: productsToInsert, skipDuplicates: true })
   
+  // Generate a shopping cart for each user
+  const users = await prisma.user.findMany({ select: { id: true }})
+  const shoppingCartsToInsert = users.map(user => ({ ownerId: user.id }))
+  const shoppingCartsCreated = await prisma.shoppingCart.createMany({ data: shoppingCartsToInsert })
+
   return console.log(`Insert counts`, {
-    users: usersCount.count,
-    products: productsCount.count
+    users: usersCreated.count,
+    shoppingCarts: shoppingCartsCreated.count,
+    products: productsCreated.count
   })
 }
