@@ -11,7 +11,7 @@ async function getShoppingCartProducts (req: Request, res: Response) {
 
   const products = await client.productsOnShoppingCart.findMany({
     select: {
-      product: { select: { name: true } },
+      product: { select: { id: true, name: true } },
       quantity: true
     },
     where: {
@@ -53,12 +53,41 @@ async function addProductToCart (req: Request<{}, {}, PostAddProductBody>, res: 
   res.status(200).json({ product: upsertedProduct })
 }
 
-async function removeProduct (req: Request, res: Response) {
-
+type DeleteProductRequest = RequestWithUserShoppingCart & {
+  params: {
+    productId: number
+  }
 }
+
+async function removeProduct (
+  req: DeleteProductRequest,
+  res: Response
+) {
+  const { shoppingCart } = req
+  const { productId } = req.params
+
+  // Ensure casting to int since it's coming from query
+  const id = typeof productId === 'string'
+    ? parseInt(productId)
+    : productId
+  
+  const client = usePrisma()
+
+  await client.productsOnShoppingCart.delete({
+    where: {
+      shoppingCartId_productId: {
+        productId: id,
+        shoppingCartId: shoppingCart.id
+      }
+    }
+  })
+
+  res.sendStatus(200)
+}
+
 
 export default {
   addProductToCart,
   getShoppingCartProducts,
-  removeProduct
+  removeProduct,
 }
