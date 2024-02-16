@@ -57,10 +57,6 @@ export const ProductsInOrder: ModelDefined<ProductsInOrderAttributes, ProductsIn
   },
   orderId: {
     type: DataTypes.INTEGER,
-    references: {
-      model: Order,
-      key: 'id'
-    },
     comment: 'Products associated to an order'
   },
   // Expand product here. If actual product row is removed, there are no side-effects
@@ -74,6 +70,10 @@ export const ProductsInOrder: ModelDefined<ProductsInOrderAttributes, ProductsIn
   price: {
     type: DataTypes.DECIMAL
   }
+})
+
+ProductsInOrder.belongsTo(Order, {
+  foreignKey: 'orderId'
 })
 
 // Opting for runtime syncing instead of recommended migration approach
