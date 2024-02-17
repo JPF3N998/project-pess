@@ -78,7 +78,7 @@ _The source of users and products come from: https://dummyjson.com/docs/products
 pnpm sequelize:sync
 ```
 
-# Ready, Set, Go!
+# You're ready, you're set, GO GO GO!
 
 ```bash
 pnpm start
