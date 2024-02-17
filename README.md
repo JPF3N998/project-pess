@@ -77,6 +77,10 @@ _The source of users and products come from: https://dummyjson.com/docs/products
 ```bash
 pnpm sequelize:sync
 ```
+The following tables should have been created:
+
+- Orders
+- ProductsInOrders
 
 # You're ready, you're set, GO GO GO!
 
@@ -87,6 +91,11 @@ pnpm start
 # Testing endpoints
 
 You can use the provided [Thunder Client](https://github.com/rangav/thunder-client-support) collection to import and test requests.
+
+# Useful VSCode extensions
+
+- Thunder Client: VSCode-embedded Postman 
+- Database Client: Connect to your SQL and NoSQL DBs right from VSCode
 
 # References
 
