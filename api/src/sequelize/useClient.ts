@@ -4,7 +4,9 @@ if (!process.env.DATABASE_URL) {
   throw Error('No connection string to database')
 }
 
-const sequelize = new Sequelize(process.env.DATABASE_URL)
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  logging: false
+})
 
 /**
  * Gets instance of Sequelize client
